@@ -1,4 +1,4 @@
-<%--
+﻿<%--
   Created by IntelliJ IDEA.
   User: HAI DANG
   Date: 4/20/2026
@@ -14,7 +14,7 @@
     <h2>Danh sách sản phẩm</h2>
 
     <a class="btn btn-primary"
-       href="${pageContext.request.contextPath}/admin/products/create">
+       href="${pageContext.request.contextPath}/admin/products?action=create">
         Thêm sản phẩm
     </a>
 
@@ -32,8 +32,9 @@
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Hãng</th>
+                <th>Danh mục</th>
                 <th>Giá</th>
-                <th>Tag</th>
+                <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
             </thead>
@@ -47,24 +48,24 @@
 
                     <td>
                         <img width="50"
-                             src="${p.imagePath.startsWith('http')
-                                   ? p.imagePath
-                                   : pageContext.request.contextPath.concat('/').concat(p.imagePath)}" />
+                             src="${p.thumbnailOrDefault}" />
 
                             ${p.name}
                     </td>
 
-                    <td>${p.brand}</td>
+                    <td>${p.brand.name}</td>
+
+                    <td>${p.category.name}</td>
 
                     <td>
-                        <fmt:formatNumber value="${p.price}" type="number"/> đ
+                        <fmt:formatNumber value="${p.minPrice}" type="number"/> đ
                     </td>
 
-                    <td>${p.tag}</td>
+                    <td>${p.active ? 'Đang bán' : 'Ẩn'}</td>
 
                     <td>
 
-                        <a href="${pageContext.request.contextPath}/admin/products/edit?id=${p.id}">
+                        <a href="${pageContext.request.contextPath}/admin/products?action=edit&id=${p.id}">
                             Sửa
                         </a>
 
@@ -89,3 +90,5 @@
     </c:if>
 
 </main>
+
+

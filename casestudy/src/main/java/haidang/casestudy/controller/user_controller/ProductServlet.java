@@ -125,8 +125,11 @@ public class ProductServlet extends HttpServlet {
                 categoryService.findAll()
         );
 
+        request.setAttribute("pageTitle", "Sản phẩm");
+        request.setAttribute("contentPage", "/product/products-content.jsp");
+
         request.getRequestDispatcher(
-                "/views/user/product/product-list.jsp"
+                "/layouts/main.jsp"
         ).forward(request, response);
     }
 

@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProductRepository implements IProductRepository {
@@ -19,10 +21,29 @@ public class ProductRepository implements IProductRepository {
                    c.id AS category_id,
                    c.name AS category_name,
                    b.id AS brand_id,
-                   b.name AS brand_name
+                   b.name AS brand_name,
+                   pv.id AS default_variant_id,
+                   pv.price AS min_price,
+                   pi.image_url AS thumbnail
             FROM products p
             JOIN categories c ON p.category_id = c.id
             JOIN brands b ON p.brand_id = b.id
+            LEFT JOIN product_variants pv
+                ON pv.id = (
+                    SELECT pv2.id
+                    FROM product_variants pv2
+                    WHERE pv2.product_id = p.id
+                    ORDER BY pv2.price ASC, pv2.id ASC
+                    LIMIT 1
+                )
+            LEFT JOIN product_images pi
+                ON pi.id = (
+                    SELECT pi2.id
+                    FROM product_images pi2
+                    WHERE pi2.product_id = p.id
+                    ORDER BY pi2.is_primary DESC, pi2.id ASC
+                    LIMIT 1
+                )
             ORDER BY p.id DESC
             """;
 
@@ -31,10 +52,29 @@ public class ProductRepository implements IProductRepository {
                    c.id AS category_id,
                    c.name AS category_name,
                    b.id AS brand_id,
-                   b.name AS brand_name
+                   b.name AS brand_name,
+                   pv.id AS default_variant_id,
+                   pv.price AS min_price,
+                   pi.image_url AS thumbnail
             FROM products p
             JOIN categories c ON p.category_id = c.id
             JOIN brands b ON p.brand_id = b.id
+            LEFT JOIN product_variants pv
+                ON pv.id = (
+                    SELECT pv2.id
+                    FROM product_variants pv2
+                    WHERE pv2.product_id = p.id
+                    ORDER BY pv2.price ASC, pv2.id ASC
+                    LIMIT 1
+                )
+            LEFT JOIN product_images pi
+                ON pi.id = (
+                    SELECT pi2.id
+                    FROM product_images pi2
+                    WHERE pi2.product_id = p.id
+                    ORDER BY pi2.is_primary DESC, pi2.id ASC
+                    LIMIT 1
+                )
             WHERE p.id = ?
             """;
 
@@ -98,6 +138,8 @@ public class ProductRepository implements IProductRepository {
             ON p.id = pv.product_id
 
         WHERE p.id = ?
+
+        ORDER BY pi.is_primary DESC, pi.id ASC, pv.price ASC, pv.id ASC
         """;
     @Override
     public List<Product> findAll() {
@@ -130,7 +172,9 @@ public class ProductRepository implements IProductRepository {
                 product.setModel(rs.getString("model"));
                 product.setDescription(rs.getString("description"));
                 product.setStatus(rs.getBoolean("status"));
-                product.setCreatedAt(rs.getTimestamp("created_at"));
+                product.setDefaultVariantId(rs.getInt("default_variant_id"));
+                product.setMinPrice(rs.getBigDecimal("min_price"));
+                product.setThumbnail(rs.getString("thumbnail"));
 
                 product.setCategory(category);
                 product.setBrand(brand);
@@ -177,9 +221,9 @@ public class ProductRepository implements IProductRepository {
                     product.setModel(rs.getString("model"));
                     product.setDescription(rs.getString("description"));
                     product.setStatus(rs.getBoolean("status"));
-                    product.setCreatedAt(
-                            rs.getTimestamp("created_at")
-                    );
+                    product.setDefaultVariantId(rs.getInt("default_variant_id"));
+                    product.setMinPrice(rs.getBigDecimal("min_price"));
+                    product.setThumbnail(rs.getString("thumbnail"));
 
                     product.setCategory(category);
                     product.setBrand(brand);
@@ -268,7 +312,14 @@ public class ProductRepository implements IProductRepository {
 
         StringBuilder sql =
                 new StringBuilder("""
-            SELECT DISTINCT p.*
+            SELECT p.*,
+                   c.id AS category_id,
+                   c.name AS category_name,
+                   b.id AS brand_id,
+                   b.name AS brand_name,
+                   pv.id AS default_variant_id,
+                   pv.price AS min_price,
+                   pi.image_url AS thumbnail
             FROM products p
 
             LEFT JOIN brands b
@@ -276,6 +327,24 @@ public class ProductRepository implements IProductRepository {
 
             LEFT JOIN categories c
                 ON p.category_id = c.id
+
+            LEFT JOIN product_variants pv
+                ON pv.id = (
+                    SELECT pv2.id
+                    FROM product_variants pv2
+                    WHERE pv2.product_id = p.id
+                    ORDER BY pv2.price ASC, pv2.id ASC
+                    LIMIT 1
+                )
+
+            LEFT JOIN product_images pi
+                ON pi.id = (
+                    SELECT pi2.id
+                    FROM product_images pi2
+                    WHERE pi2.product_id = p.id
+                    ORDER BY pi2.is_primary DESC, pi2.id ASC
+                    LIMIT 1
+                )
 
             WHERE 1=1
             """);
@@ -324,6 +393,7 @@ public class ProductRepository implements IProductRepository {
         // PAGINATION
 
         sql.append("""
+            ORDER BY p.id DESC
             LIMIT ?, ?
             """);
 
@@ -468,11 +538,11 @@ public class ProductRepository implements IProductRepository {
 
                 Product product = null;
 
-                List<ProductImage> images =
-                        new ArrayList<>();
+                Map<String, ProductImage> imageMap =
+                        new LinkedHashMap<>();
 
-                List<ProductVariant> variants =
-                        new ArrayList<>();
+                Map<Integer, ProductVariant> variantMap =
+                        new LinkedHashMap<>();
 
                 while (rs.next()) {
 
@@ -500,12 +570,6 @@ public class ProductRepository implements IProductRepository {
 
                         product.setStatus(
                                 rs.getBoolean("status")
-                        );
-
-                        product.setCreatedAt(
-                                rs.getTimestamp(
-                                        "created_at"
-                                )
                         );
 
                         // CATEGORY
@@ -573,7 +637,7 @@ public class ProductRepository implements IProductRepository {
                                 )
                         );
 
-                        images.add(image);
+                        imageMap.putIfAbsent(imageUrl, image);
                     }
 
                     // VARIANT
@@ -585,40 +649,68 @@ public class ProductRepository implements IProductRepository {
 
                     if (variantId > 0) {
 
-                        ProductVariant variant =
-                                new ProductVariant();
+                        if (!variantMap.containsKey(variantId)) {
+                            ProductVariant variant =
+                                    new ProductVariant();
 
-                        variant.setId(
-                                variantId
-                        );
+                            variant.setId(
+                                    variantId
+                            );
 
-                        variant.setRam(
-                                rs.getString("ram")
-                        );
+                            variant.setProductId(product.getId());
 
-                        variant.setStorage(
-                                rs.getString(
-                                        "storage"
-                                )
-                        );
+                            variant.setRam(
+                                    rs.getString("ram")
+                            );
 
-                        variant.setPrice(
-                                rs.getBigDecimal(
-                                        "price"
-                                )
-                        );
+                            variant.setStorage(
+                                    rs.getString(
+                                            "storage"
+                                    )
+                            );
 
-                        variant.setStock(
-                                rs.getInt("stock")
-                        );
+                            variant.setPrice(
+                                    rs.getBigDecimal(
+                                            "price"
+                                    )
+                            );
 
-                        variants.add(variant);
+                            variant.setStock(
+                                    rs.getInt("stock")
+                            );
+
+                            variantMap.put(variantId, variant);
+                        }
                     }
                 }
 
                 if (product != null) {
 
-                    product.setImages(images);
+                    List<ProductImage> images =
+                            new ArrayList<>(imageMap.values());
+
+                    List<ProductVariant> variants =
+                            new ArrayList<>(variantMap.values());
+
+                    ProductImage primaryImage =
+                            images.stream()
+                                    .filter(ProductImage::isPrimary)
+                                    .findFirst()
+                                    .orElse(images.isEmpty() ? null : images.get(0));
+
+                    ProductVariant defaultVariant =
+                            variants.stream()
+                                    .findFirst()
+                                    .orElse(null);
+
+                    if (primaryImage != null) {
+                        product.setThumbnail(primaryImage.getImageUrl());
+                    }
+
+                    if (defaultVariant != null) {
+                        product.setDefaultVariantId(defaultVariant.getId());
+                        product.setMinPrice(defaultVariant.getPrice());
+                    }
 
                     product.setVariants(variants);
 
@@ -659,6 +751,18 @@ public class ProductRepository implements IProductRepository {
                 rs.getBoolean("status")
         );
 
+        product.setDefaultVariantId(
+                rs.getInt("default_variant_id")
+        );
+
+        product.setMinPrice(
+                rs.getBigDecimal("min_price")
+        );
+
+        product.setThumbnail(
+                rs.getString("thumbnail")
+        );
+
         // CATEGORY
 
         Category category =
@@ -666,6 +770,9 @@ public class ProductRepository implements IProductRepository {
 
         category.setId(
                 rs.getInt("category_id")
+        );
+        category.setName(
+                rs.getString("category_name")
         );
 
         product.setCategory(category);
@@ -677,6 +784,9 @@ public class ProductRepository implements IProductRepository {
 
         brand.setId(
                 rs.getInt("brand_id")
+        );
+        brand.setName(
+                rs.getString("brand_name")
         );
 
         product.setBrand(brand);

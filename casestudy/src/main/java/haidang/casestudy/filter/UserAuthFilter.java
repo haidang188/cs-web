@@ -11,7 +11,8 @@ import java.io.IOException;
 @WebFilter({
         "/cart",
         "/checkout",
-        "/orders"
+        "/orders",
+        "/order-success"
 })
 public class UserAuthFilter implements Filter {
     @Override

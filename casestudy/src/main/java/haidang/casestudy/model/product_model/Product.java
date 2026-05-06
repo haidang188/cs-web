@@ -22,6 +22,8 @@ public class Product {
 
     private BigDecimal minPrice;
 
+    private int defaultVariantId;
+
     public Product() {
     }
 
@@ -137,6 +139,14 @@ public class Product {
     public void setMinPrice(BigDecimal minPrice) {
         this.minPrice = minPrice;
     }
+
+    public int getDefaultVariantId() {
+        return defaultVariantId;
+    }
+
+    public void setDefaultVariantId(int defaultVariantId) {
+        this.defaultVariantId = defaultVariantId;
+    }
     @Override
     public String toString() {
         return "Product{" +
@@ -151,7 +161,7 @@ public class Product {
         if (thumbnail == null
                 || thumbnail.isBlank()) {
 
-            return "/assets/images/no-image.png";
+            return "https://placehold.co/600x420/f8fafc/64748b?text=No+Image";
         }
 
         return thumbnail;

@@ -26,9 +26,7 @@ public class RegisterServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher(
-                "/views/auth/register.jsp"
-        ).forward(request, response);
+        showRegister(request, response);
     }
 
     @Override
@@ -77,9 +75,7 @@ public class RegisterServlet extends HttpServlet {
                     phone
             );
 
-            request.getRequestDispatcher(
-                    "/views/auth/register.jsp"
-            ).forward(request, response);
+            showRegister(request, response);
 
             return;
         }
@@ -125,9 +121,7 @@ public class RegisterServlet extends HttpServlet {
                     phone
             );
 
-            request.getRequestDispatcher(
-                    "/views/auth/register.jsp"
-            ).forward(request, response);
+            showRegister(request, response);
 
             return;
         }
@@ -138,5 +132,15 @@ public class RegisterServlet extends HttpServlet {
                 request.getContextPath()
                         + "/login"
         );
+    }
+
+    private void showRegister(HttpServletRequest request,
+                              HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("pageTitle", "Đăng ký");
+        request.setAttribute("contentPage", "/auth/register-content.jsp");
+        request.getRequestDispatcher(
+                "/layouts/auth.jsp"
+        ).forward(request, response);
     }
 }

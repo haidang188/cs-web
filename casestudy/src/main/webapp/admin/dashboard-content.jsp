@@ -1,4 +1,4 @@
-<%--
+﻿<%--
   Created by IntelliJ IDEA.
   User: HAI DANG
   Date: 4/20/2026
@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <main class="admin-page">
     <section class="section-block">
@@ -38,7 +39,7 @@
                      </a>
 
                 <a class="admin-card"
-                   href="${pageContext.request.contextPath}/home">
+                   href="${pageContext.request.contextPath}/products">
                     <h3>Về trang người dùng</h3>
                     <p>Chuyển sang giao diện cho khách hàng</p>
                 </a>
@@ -48,3 +49,5 @@
         </div>
     </section>
 </main>
+
+

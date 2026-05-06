@@ -1,0 +1,75 @@
+﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<main class="detail-page">
+  <section class="section-block">
+    <div class="container">
+      <c:choose>
+        <c:when test="${empty product}">
+          <p class="catalog-empty">Không tìm thấy thông tin sản phẩm.</p>
+        </c:when>
+        <c:otherwise>
+          <div class="detail-layout">
+            <div class="detail-media">
+              <img class="detail-image"
+                   src="${product.thumbnailOrDefault}"
+                   alt="${product.name}" />
+            </div>
+
+            <div class="detail-info">
+              <p class="section-kicker">${product.brand.name}</p>
+              <h1>${product.name}</h1>
+
+              <p class="detail-brand">
+                Model: <strong>${product.model}</strong>
+                <br/>
+                Danh mục: <strong>${product.category.name}</strong>
+              </p>
+
+              <p class="detail-desc">${product.description}</p>
+
+              <p class="detail-price">
+                Từ <fmt:formatNumber value="${product.minPrice}" type="number"/> đ
+              </p>
+
+              <form action="${pageContext.request.contextPath}/cart"
+                    method="post"
+                    class="admin-form">
+                <input type="hidden" name="action" value="add" />
+
+                <label>
+                  Phiên bản
+                  <select name="variantId" required>
+                    <c:forEach var="variant" items="${product.variants}">
+                      <option value="${variant.id}" ${variant.stock <= 0 ? 'disabled' : ''}>
+                        RAM ${variant.ram} - ${variant.storage}
+                        -
+                        <fmt:formatNumber value="${variant.price}" type="number"/> đ
+                        (${variant.stock} còn)
+                      </option>
+                    </c:forEach>
+                  </select>
+                </label>
+
+                <label>
+                  Số lượng
+                  <input type="number" name="quantity" value="1" min="1" required />
+                </label>
+
+                <div class="detail-actions">
+                  <button class="btn btn-primary" type="submit" ${empty product.variants ? 'disabled' : ''}>
+                    Thêm vào giỏ
+                  </button>
+                  <a class="btn btn-ghost" href="${pageContext.request.contextPath}/cart">Xem giỏ hàng</a>
+                  <a class="btn btn-ghost" href="${pageContext.request.contextPath}/products">Quay lại</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </c:otherwise>
+      </c:choose>
+    </div>
+  </section>
+</main>
+
+

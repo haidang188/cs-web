@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-@WebServlet("/admin/products")
+@WebServlet({"/admin/products", "/admin/products/*"})
 public class AdminProductServlet extends HttpServlet {
     private IProductService productService;
 
@@ -45,6 +45,11 @@ public class AdminProductServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
+
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null && pathInfo.length() > 1) {
+            action = pathInfo.substring(1);
+        }
 
         if (action == null) {
             action = "list";
@@ -77,6 +82,11 @@ public class AdminProductServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null && pathInfo.length() > 1) {
+            action = pathInfo.substring(1);
+        }
+
         if ("create".equals(action)) {
 
             createProduct(request, response);
@@ -84,6 +94,9 @@ public class AdminProductServlet extends HttpServlet {
         } else if ("edit".equals(action)) {
 
             updateProduct(request, response);
+        } else if ("delete".equals(action)) {
+
+            deleteProduct(request, response);
         }
     }
 
@@ -95,9 +108,11 @@ public class AdminProductServlet extends HttpServlet {
                 productService.getAllProducts();
 
         request.setAttribute("products", products);
+        request.setAttribute("pageTitle", "Quản lý sản phẩm");
+        request.setAttribute("contentPage", "/admin/products-content.jsp");
 
         request.getRequestDispatcher(
-                "/views/admin/product/product-list.jsp"
+                "/layouts/admin.jsp"
         ).forward(request, response);
     }
 
@@ -113,9 +128,11 @@ public class AdminProductServlet extends HttpServlet {
 
         request.setAttribute("categories", categories);
         request.setAttribute("brands", brands);
+        request.setAttribute("pageTitle", "Thêm sản phẩm");
+        request.setAttribute("contentPage", "/admin/product-form-content.jsp");
 
         request.getRequestDispatcher(
-                "/views/admin/product/product-form.jsp"
+                "/layouts/admin.jsp"
         ).forward(request, response);
     }
 
@@ -198,9 +215,12 @@ public class AdminProductServlet extends HttpServlet {
 
         request.setAttribute("categories", categories);
         request.setAttribute("brands", brands);
+        request.setAttribute("editing", true);
+        request.setAttribute("pageTitle", "Sửa sản phẩm");
+        request.setAttribute("contentPage", "/admin/product-form-content.jsp");
 
         request.getRequestDispatcher(
-                "/views/admin/product/product-form.jsp"
+                "/layouts/admin.jsp"
         ).forward(request, response);
     }
 
@@ -241,7 +261,7 @@ public class AdminProductServlet extends HttpServlet {
 
         product.setDescription(description);
 
-        product.setStatus(false);
+        product.setStatus("true".equals(status));
 
         Category category = new Category();
         category.setId(categoryId);
