@@ -1,6 +1,9 @@
 package haidang.casestudy.controller.user_controller;
 
 import haidang.casestudy.model.user_model.User;
+import haidang.casestudy.model.cart_model.Cart;
+import haidang.casestudy.service.cart_service.CartService;
+import haidang.casestudy.service.cart_service.ICartService;
 import haidang.casestudy.service.order_service.IOrderService;
 import haidang.casestudy.service.order_service.OrderService;
 import jakarta.servlet.ServletException;
@@ -14,12 +17,15 @@ import java.io.IOException;
 @WebServlet("/checkout")
 public class CheckoutServlet extends HttpServlet {
     private IOrderService orderService;
+    private ICartService cartService;
 
     @Override
     public void init() {
 
         orderService =
                 new OrderService();
+        cartService =
+                new CartService();
     }
 
     @Override
@@ -27,9 +33,7 @@ public class CheckoutServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher(
-                "/views/user/order/checkout.jsp"
-        ).forward(request, response);
+        showCheckout(request, response);
     }
 
     @Override
@@ -61,9 +65,7 @@ public class CheckoutServlet extends HttpServlet {
                     "Please fill all fields"
             );
 
-            request.getRequestDispatcher(
-                    "/views/user/order/checkout.jsp"
-            ).forward(request, response);
+            showCheckout(request, response);
 
             return;
         }
@@ -86,9 +88,7 @@ public class CheckoutServlet extends HttpServlet {
                     "Checkout failed"
             );
 
-            request.getRequestDispatcher(
-                    "/views/user/order/checkout.jsp"
-            ).forward(request, response);
+            showCheckout(request, response);
 
             return;
         }
@@ -100,5 +100,26 @@ public class CheckoutServlet extends HttpServlet {
                         + "/order-success?id="
                         + orderId
         );
+    }
+
+    private void showCheckout(HttpServletRequest request,
+                              HttpServletResponse response)
+            throws ServletException, IOException {
+
+        User user =
+                (User) request.getSession()
+                        .getAttribute("loggedInUser");
+
+        Cart cart =
+                cartService.getCartByUserId(user.getId());
+
+        request.setAttribute("cartItems", cart.getItems());
+        request.setAttribute("cartTotal", cart.getTotalAmount());
+        request.setAttribute("pageTitle", "Thanh toán");
+        request.setAttribute("contentPage", "/cart/checkout-content.jsp");
+
+        request.getRequestDispatcher(
+                "/layouts/main.jsp"
+        ).forward(request, response);
     }
 }

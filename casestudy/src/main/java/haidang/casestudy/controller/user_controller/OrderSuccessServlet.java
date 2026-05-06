@@ -15,8 +15,12 @@ public class OrderSuccessServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setAttribute("placed", true);
+        request.setAttribute("pageTitle", "Đặt hàng thành công");
+        request.setAttribute("contentPage", "/order/order-content.jsp");
+
         request.getRequestDispatcher(
-                "/views/user/order/order-success.jsp"
+                "/layouts/main.jsp"
         ).forward(request, response);
     }
 

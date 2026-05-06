@@ -1,89 +1,99 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: HAI DANG
-  Date: 4/20/2026
-  Time: 11:05 AM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html; charset=UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <main class="admin-page">
+    <section class="section-block">
+        <div class="container">
+            <div class="section-head">
+                <p class="section-kicker">Quản lý sản phẩm</p>
+                <h2>
+                    <c:choose>
+                        <c:when test="${editing}">Sửa sản phẩm</c:when>
+                        <c:otherwise>Thêm sản phẩm mới</c:otherwise>
+                    </c:choose>
+                </h2>
+            </div>
 
-    <h2>
-        <c:choose>
-            <c:when test="${editing}">Sua san pham</c:when>
-            <c:otherwise>Them san pham moi</c:otherwise>
-        </c:choose>
-    </h2>
+            <c:if test="${not empty errorMessage}">
+                <p class="error-box">${errorMessage}</p>
+            </c:if>
 
-    <!-- ERROR -->
-    <c:if test="${not empty errorMessage}">
-        <p class="error-box">${errorMessage}</p>
-    </c:if>
+            <form class="admin-form"
+                  method="post"
+                  action="${pageContext.request.contextPath}/admin/products/${editing ? 'edit' : 'create'}">
 
-    <!-- SET ACTION -->
-    <c:set var="formAction">
-        <c:choose>
-            <c:when test="${editing}">/admin/products/edit</c:when>
-            <c:otherwise>/admin/products/create</c:otherwise>
-        </c:choose>
-    </c:set>
+                <c:if test="${editing}">
+                    <input type="hidden" name="id" value="${product.id}" />
+                </c:if>
 
-    <!-- SET SELECTED BRAND -->
-    <c:set var="selectedBrand"
-           value="${not empty brand ? brand : product.brand}" />
+                <label>
+                    Tên sản phẩm
+                    <input type="text"
+                           name="name"
+                           value="${product.name}"
+                           required />
+                </label>
 
-    <!-- FORM -->
-    <form method="post"
-          action="${pageContext.request.contextPath}${formAction}">
+                <label>
+                    Model
+                    <input type="text"
+                           name="model"
+                           value="${product.model}"
+                           required />
+                </label>
 
-        <input type="hidden"
-               name="id"
-               value="${editing ? product.id : 0}" />
+                <label>
+                    Danh mục
+                    <select name="categoryId" required>
+                        <c:forEach var="category" items="${categories}">
+                            <option value="${category.id}"
+                                    ${editing && product.category.id == category.id ? 'selected' : ''}>
+                                ${category.name}
+                            </option>
+                        </c:forEach>
+                    </select>
+                </label>
 
-        <!-- NAME -->
-        <input type="text"
-               name="name"
-               value="${not empty name ? name : product.name}"
-               required />
+                <label>
+                    Thương hiệu
+                    <select name="brandId" required>
+                        <c:forEach var="brand" items="${brands}">
+                            <option value="${brand.id}"
+                                    ${editing && product.brand.id == brand.id ? 'selected' : ''}>
+                                ${brand.name}
+                            </option>
+                        </c:forEach>
+                    </select>
+                </label>
 
-        <!-- BRAND -->
-        <select name="brand">
-            <option value="apple" ${selectedBrand == 'apple' ? 'selected' : ''}>Apple</option>
-            <option value="samsung" ${selectedBrand == 'samsung' ? 'selected' : ''}>Samsung</option>
-            <option value="xiaomi" ${selectedBrand == 'xiaomi' ? 'selected' : ''}>Xiaomi</option>
-            <option value="oppo" ${selectedBrand == 'oppo' ? 'selected' : ''}>OPPO</option>
-        </select>
+                <label>
+                    Mô tả
+                    <textarea name="description" rows="5">${product.description}</textarea>
+                </label>
 
-        <!-- PRICE -->
-        <input type="number"
-               name="price"
-               value="${not empty price ? price : product.price}"
-               required />
+                <c:if test="${editing}">
+                    <label>
+                        Trạng thái
+                        <select name="status">
+                            <option value="true" ${product.active ? 'selected' : ''}>Đang bán</option>
+                            <option value="false" ${not product.active ? 'selected' : ''}>Ẩn</option>
+                        </select>
+                    </label>
+                </c:if>
 
-        <!-- TAG -->
-        <input type="text"
-               name="tag"
-               value="${not empty tag ? tag : product.tag}"
-               required />
-
-        <!-- IMAGE -->
-        <input type="url"
-               name="imagePath"
-               value="${not empty imagePath ? imagePath : product.imagePath}"
-               required />
-
-        <!-- DESCRIPTION -->
-        <textarea name="description" required>${not empty description ? description : product.description}</textarea>
-
-        <button type="submit">
-            <c:choose>
-                <c:when test="${editing}">Luu thay doi</c:when>
-                <c:otherwise>Tao san pham</c:otherwise>
-            </c:choose>
-        </button>
-
-    </form>
-
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <c:choose>
+                            <c:when test="${editing}">Lưu thay đổi</c:when>
+                            <c:otherwise>Tạo sản phẩm</c:otherwise>
+                        </c:choose>
+                    </button>
+                    <a class="btn btn-ghost" href="${pageContext.request.contextPath}/admin/products">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </section>
 </main>
+
+

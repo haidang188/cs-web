@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet("/product-detail")
+@WebServlet({"/product-detail", "/products/detail"})
 public class ProductDetailServlet
         extends HttpServlet {
 
@@ -74,10 +74,13 @@ public class ProductDetailServlet
                 optionalProduct.get()
         );
 
+        request.setAttribute("pageTitle", optionalProduct.get().getName());
+        request.setAttribute("contentPage", "/product/product-detail-content.jsp");
+
         // FORWARD
 
         request.getRequestDispatcher(
-                "/views/user/product/product-detail.jsp"
+                "/layouts/main.jsp"
         ).forward(request, response);
     }
 

@@ -53,7 +53,7 @@ public class AdminAuthFilter implements Filter {
 
             resp.sendRedirect(
                     req.getContextPath()
-                            + "/home"
+                            + "/products"
             );
 
             return;

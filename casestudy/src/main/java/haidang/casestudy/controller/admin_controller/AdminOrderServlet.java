@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet("/admin/orders")
@@ -35,9 +36,12 @@ public class AdminOrderServlet extends HttpServlet {
                 "orders",
                 orders
         );
+        request.setAttribute("allowedStatuses", Arrays.asList("PENDING", "DONE", "CANCEL"));
+        request.setAttribute("pageTitle", "Quản lý đơn hàng");
+        request.setAttribute("contentPage", "/admin/orders-content.jsp");
 
         request.getRequestDispatcher(
-                "/views/admin/order/order-list.jsp"
+                "/layouts/admin.jsp"
         ).forward(request, response);
     }
 

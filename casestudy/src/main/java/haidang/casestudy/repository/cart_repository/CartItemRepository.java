@@ -103,6 +103,10 @@ public class CartItemRepository implements ICartItemRepository{
                             rs.getString("name")
                     );
 
+                    product.setThumbnail(
+                            rs.getString("image_url")
+                    );
+
                     ProductVariant variant =
                             new ProductVariant();
 

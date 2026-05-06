@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -40,11 +40,11 @@
                         <c:forEach var="order" items="${orders}">
                             <tr>
                                 <td>#${order.id}</td>
-                                <td>${order.customerName}<br/>${order.phone}</td>
-                                <td>${order.username}</td>
+                                <td>User #${order.userId}<br/>${order.phone}</td>
+                                <td>${order.createdAt}</td>
                                 <td>${order.address}</td>
-                                <td><fmt:formatNumber value="${order.totalAmount}" type="number" groupingUsed="true"/> đ</td>
-                                <td>${order.paymentMethod}</td>
+                                <td><fmt:formatNumber value="${order.total}" type="number" groupingUsed="true"/> đ</td>
+                                <td>COD</td>
                                 <td>
                                     <form class="admin-row-actions" method="post" action="${pageContext.request.contextPath}/admin/orders">
                                         <input type="hidden" name="orderId" value="${order.id}"/>
@@ -65,3 +65,5 @@
         </div>
     </section>
 </main>
+
+

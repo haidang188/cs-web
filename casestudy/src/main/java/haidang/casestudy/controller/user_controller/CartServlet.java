@@ -69,6 +69,9 @@ public class CartServlet extends HttpServlet {
         } else if ("update".equals(action)) {
 
             updateQuantity(request, response);
+        } else if ("remove".equals(action)) {
+
+            removeItem(request, response);
         }
     }
 
@@ -86,9 +89,13 @@ public class CartServlet extends HttpServlet {
                 );
 
         request.setAttribute("cart", cart);
+        request.setAttribute("cartItems", cart.getItems());
+        request.setAttribute("cartTotal", cart.getTotalAmount());
+        request.setAttribute("pageTitle", "Giỏ hàng");
+        request.setAttribute("contentPage", "/cart/cart-content.jsp");
 
         request.getRequestDispatcher(
-                "/views/user/cart/cart.jsp"
+                "/layouts/main.jsp"
         ).forward(request, response);
     }
 

@@ -28,9 +28,7 @@ public class LoginServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher(
-                "/views/auth/login.jsp"
-        ).forward(request, response);
+        showLogin(request, response);
     }
 
     @Override
@@ -53,10 +51,9 @@ public class LoginServlet extends HttpServlet {
                     "errorMessage",
                     "Invalid email or password"
             );
+            request.setAttribute("enteredEmail", email);
 
-            request.getRequestDispatcher(
-                    "/views/auth/login.jsp"
-            ).forward(request, response);
+            showLogin(request, response);
 
             return;
         }
@@ -85,5 +82,15 @@ public class LoginServlet extends HttpServlet {
                             + "/products"
             );
         }
+    }
+
+    private void showLogin(HttpServletRequest request,
+                           HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("pageTitle", "Đăng nhập");
+        request.setAttribute("contentPage", "/auth/login-content.jsp");
+        request.getRequestDispatcher(
+                "/layouts/auth.jsp"
+        ).forward(request, response);
     }
 }
