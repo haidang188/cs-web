@@ -1,4 +1,4 @@
-package haidang.casestudy.controller;
+package haidang.casestudy.controller.admin_controller;
 
 import haidang.casestudy.model.product_model.Brand;
 import haidang.casestudy.model.product_model.Category;

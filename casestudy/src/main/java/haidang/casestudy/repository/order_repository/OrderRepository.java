@@ -55,52 +55,25 @@ public class OrderRepository implements IOrderRepository {
         Connection connection = null;
 
         try {
-
-            connection =
-                    DBConnection.getConnection();
-
-            // START TRANSACTION
-
+            connection = DBConnection.getConnection();
             connection.setAutoCommit(false);
 
-            // INSERT ORDER
+
 
             int orderId;
 
             try (
-                    PreparedStatement ps =
-                            connection.prepareStatement(
-                                    INSERT_ORDER,
-                                    Statement.RETURN_GENERATED_KEYS
-                            )
+                    PreparedStatement ps = connection.prepareStatement(INSERT_ORDER, Statement.RETURN_GENERATED_KEYS)
             ) {
 
                 ps.setInt(1, order.getUserId());
-
-                ps.setBigDecimal(
-                        2,
-                        order.getTotal()
-                );
-
-                ps.setString(
-                        3,
-                        order.getStatus()
-                );
-
-                ps.setString(
-                        4,
-                        order.getAddress()
-                );
-
-                ps.setString(
-                        5,
-                        order.getPhone()
-                );
-
+                ps.setBigDecimal(2, order.getTotal());
+                ps.setString(3, order.getStatus());
+                ps.setString(4, order.getAddress());
+                ps.setString(5, order.getPhone());
                 ps.executeUpdate();
 
-                try (ResultSet rs =
-                             ps.getGeneratedKeys()) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
 
                     if (!rs.next()) {
 
@@ -118,39 +91,23 @@ public class OrderRepository implements IOrderRepository {
             for (OrderItem item : order.getItems()) {
 
                 try (
-                        PreparedStatement ps =
-                                connection.prepareStatement(
-                                        INSERT_ORDER_ITEM
-                                )
+                        PreparedStatement ps = connection.prepareStatement(INSERT_ORDER_ITEM)
                 ) {
 
                     ps.setInt(1, orderId);
 
-                    ps.setInt(
-                            2,
-                            item.getVariantId()
-                    );
+                    ps.setInt(2, item.getVariantId());
 
-                    ps.setString(
-                            3,
-                            item.getProductName()
-                    );
+                    ps.setString(3, item.getProductName());
 
-                    ps.setBigDecimal(
-                            4,
-                            item.getPrice()
-                    );
+                    ps.setBigDecimal(4, item.getPrice());
 
-                    ps.setInt(
-                            5,
-                            item.getQuantity()
-                    );
+                    ps.setInt(5, item.getQuantity());
 
                     ps.executeUpdate();
                 }
             }
 
-            // COMMIT
 
             connection.commit();
 
@@ -214,38 +171,21 @@ public class OrderRepository implements IOrderRepository {
 
             while (rs.next()) {
 
-                Order order =
-                        new Order();
+                Order order = new Order();
 
-                order.setId(
-                        rs.getInt("id")
-                );
+                order.setId(rs.getInt("id"));
 
-                order.setUserId(
-                        rs.getInt("user_id")
-                );
+                order.setUserId(rs.getInt("user_id"));
 
-                order.setTotal(
-                        rs.getBigDecimal("total")
-                );
+                order.setTotal(rs.getBigDecimal("total"));
 
-                order.setStatus(
-                        rs.getString("status")
-                );
+                order.setStatus(rs.getString("status"));
 
-                order.setAddress(
-                        rs.getString("address")
-                );
+                order.setAddress(rs.getString("address"));
 
-                order.setPhone(
-                        rs.getString("phone")
-                );
+                order.setPhone(rs.getString("phone"));
 
-                order.setCreatedAt(
-                        rs.getTimestamp(
-                                "created_at"
-                        )
-                );
+                order.setCreatedAt(rs.getTimestamp("created_at"));
 
                 orders.add(order);
             }
@@ -261,13 +201,9 @@ public class OrderRepository implements IOrderRepository {
     @Override
     public void updateStatus(int orderId, String status) {
         try (
-                Connection connection =
-                        DBConnection.getConnection();
+                Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                UPDATE_STATUS
-                        )
+                PreparedStatement ps = connection.prepareStatement(UPDATE_STATUS)
         ) {
 
             ps.setString(1, status);
