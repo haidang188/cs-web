@@ -84,7 +84,7 @@ html {
 .cps-main-inner {
     min-height: 72px;
     display: grid;
-    grid-template-columns: auto auto auto 1fr auto;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.7rem;
 }
@@ -135,13 +135,36 @@ html {
     width: 100%;
 }
 
+.cps-search {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem;
+    padding: 0.38rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
 .cps-search input {
     width: 100%;
     border: 0;
-    border-radius: 12px;
-    padding: 0.72rem 0.9rem;
+    border-radius: 999px;
+    padding: 0.72rem 0.95rem;
     font-size: 1rem;
     color: #0f172a;
+    background: #ffffff;
+    outline: none;
+}
+
+.cps-search button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.72rem 1rem;
+    background: linear-gradient(135deg, #0f172a, #334155);
+    color: #ffffff;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 .cps-actions {
@@ -149,6 +172,7 @@ html {
     align-items: center;
     justify-content: flex-end;
     gap: 0.42rem;
+    flex-wrap: wrap;
 }
 
 .cps-actions a {
@@ -159,6 +183,10 @@ html {
     font-weight: 700;
     border: 1px solid rgba(255, 255, 255, 0.18);
     background: rgba(255, 255, 255, 0.08);
+}
+
+.cps-actions a:hover {
+    background: rgba(255, 255, 255, 0.18);
 }
 
 .cps-home-shell {
@@ -1003,7 +1031,7 @@ html {
 
 .catalog-form {
     display: grid;
-    grid-template-columns: 1fr 220px auto;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 220px) minmax(180px, 220px) 120px;
     gap: 0.6rem;
     margin-bottom: 1rem;
 }
@@ -1061,11 +1089,64 @@ html {
     padding: 1rem;
 }
 
+.slider-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.slider-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 12px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.slider-viewport::-webkit-scrollbar {
+    display: none;
+}
+
+.slider-track {
+    display: flex;
+    width: 100%;
+}
+
+.slider-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+}
+
+.slider-btn {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    background: rgba(15, 23, 42, 0.88);
+    color: #ffffff;
+    font-size: 1.6rem;
+    line-height: 1;
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.slider-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(15, 23, 42, 1);
+}
+
 .detail-image {
     width: 100%;
     border-radius: 12px;
     display: block;
     background: linear-gradient(160deg, #f8fbff 0%, #ecfeff 100%);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 .detail-info {
@@ -1515,11 +1596,11 @@ html {
     }
 
     .catalog-form {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .catalog-form button {
-        grid-column: span 2;
+        grid-column: auto;
     }
 
     .detail-layout {

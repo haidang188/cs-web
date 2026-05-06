@@ -11,9 +11,34 @@
         <c:otherwise>
           <div class="detail-layout">
             <div class="detail-media">
-              <img class="detail-image"
-                   src="${product.thumbnailOrDefault}"
-                   alt="${product.name}" />
+              <c:choose>
+                <c:when test="${not empty product.images}">
+                  <div class="slider-shell">
+                    <button type="button" class="slider-btn slider-btn-prev" aria-label="Ảnh trước">‹</button>
+
+                    <div class="slider-viewport" id="productImageViewport">
+                      <div class="slider-track" id="productImageTrack">
+                        <c:forEach var="image" items="${product.images}" varStatus="status">
+                          <c:if test="${status.index < 3}">
+                            <div class="slider-slide">
+                              <img class="detail-image"
+                                   src="${image.imageUrl}"
+                                   alt="${product.name}" />
+                            </div>
+                          </c:if>
+                        </c:forEach>
+                      </div>
+                    </div>
+
+                    <button type="button" class="slider-btn slider-btn-next" aria-label="Ảnh sau">›</button>
+                  </div>
+                </c:when>
+                <c:otherwise>
+                  <img class="detail-image"
+                       src="${product.thumbnailOrDefault}"
+                       alt="${product.name}" />
+                </c:otherwise>
+              </c:choose>
             </div>
 
             <div class="detail-info">
@@ -71,5 +96,46 @@
     </div>
   </section>
 </main>
+
+<script>
+  (function () {
+    const viewport = document.getElementById('productImageViewport');
+    const track = document.getElementById('productImageTrack');
+
+    if (!viewport || !track) {
+      return;
+    }
+
+    const slides = track.querySelectorAll('.slider-slide');
+    if (slides.length <= 1) {
+      return;
+    }
+
+    const prevButton = document.querySelector('.slider-btn-prev');
+    const nextButton = document.querySelector('.slider-btn-next');
+
+    function scrollToIndex(index) {
+      const normalizedIndex = (index + slides.length) % slides.length;
+      const slideWidth = viewport.clientWidth;
+
+      viewport.scrollTo({
+        left: slideWidth * normalizedIndex,
+        behavior: 'smooth'
+      });
+    }
+
+    let currentIndex = 0;
+
+    prevButton.addEventListener('click', function () {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      scrollToIndex(currentIndex);
+    });
+
+    nextButton.addEventListener('click', function () {
+      currentIndex = (currentIndex + 1) % slides.length;
+      scrollToIndex(currentIndex);
+    });
+  })();
+</script>
 
 

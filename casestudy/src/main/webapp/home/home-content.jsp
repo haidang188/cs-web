@@ -7,29 +7,23 @@
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-content">
-        <p class="badge">Mua sắm thong minh 2026</p>
-        <h1>Nâng cấp điện thoại đẹp, mạnh, đúng gu của bạn</h1>
+        <p class="badge">Điện thoại chính hãng</p>
+        <h1>Chọn máy phù hợp, xem giá rõ ràng, mua nhanh gọn</h1>
 
         <p class="hero-text">
-          Chọn ngay các dòng smartphone mới nhất với hỗ trợ trả góp 0%,
-          bảo hành chính hãng và giao nhanh trong nội thành trong 2 giờ.
+          Tập trung vào sản phẩm, giá bán và trải nghiệm mua sắm gọn gàng.
+          Tìm nhanh theo hãng, xem chi tiết và thêm vào giỏ trong vài thao tác.
         </p>
 
         <form class="search-bar" action="${pageContext.request.contextPath}/products" method="get">
-          <input name="keyword" type="text" placeholder="Tim iPhone, Samsung, Xiaomi..." />
-          <button type="submit">Tim ngay</button>
+          <input name="keyword" type="text" placeholder="Tìm iPhone, Samsung, Xiaomi..." />
+          <button type="submit">Tìm</button>
         </form>
 
         <div class="hero-actions">
-          <a href="#san-pham" class="btn btn-primary">Mua ngay</a>
-          <a href="${pageContext.request.contextPath}/products" class="btn btn-ghost">Xem sản phẩm</a>
+          <a href="#san-pham" class="btn btn-primary">Xem sản phẩm</a>
+          <a href="${pageContext.request.contextPath}/products" class="btn btn-ghost">Tất cả sản phẩm</a>
         </div>
-
-        <ul class="hero-stats">
-          <li><strong>12K+</strong><span>Khách hàng hài lòng</span></li>
-          <li><strong>500+</strong><span>May ban moi thang</span></li>
-          <li><strong>99%</strong><span>Đánh giá 5 sao</span></li>
-        </ul>
       </div>
 
       <div class="hero-card">
@@ -37,12 +31,6 @@
           <div class="camera"></div>
           <div class="screen-glow"></div>
         </div>
-        <div class="price-tag">
-          <span>Từ</span>
-          <strong>7.990.000d</strong>
-        </div>
-        <div class="floating-chip chip-left">Freeship 2h</div>
-        <div class="floating-chip chip-right">Trả góp 0%</div>
       </div>
     </div>
   </section>
@@ -96,16 +84,8 @@
     <div class="container">
 
       <div class="section-head">
-        <p class="section-kicker">Sản phẩm bán chạy</p>
-        <h2>Top smartphone được mua nhiều nhất</h2>
-      </div>
-
-      <div class="filter-row">
-        <a class="filter-btn" href="${pageContext.request.contextPath}/products">Tất cả</a>
-        <a class="filter-btn" href="${pageContext.request.contextPath}/products?brand=apple">Apple</a>
-        <a class="filter-btn" href="${pageContext.request.contextPath}/products?brand=samsung">Samsung</a>
-        <a class="filter-btn" href="${pageContext.request.contextPath}/products?brand=xiaomi">Xiaomi</a>
-        <a class="filter-btn" href="${pageContext.request.contextPath}/products?brand=oppo">OPPO</a>
+        <p class="section-kicker">Sản phẩm nổi bật</p>
+        <h2>Danh sách điện thoại đang có sẵn</h2>
       </div>
 
       <div class="product-grid">
@@ -145,61 +125,6 @@
         </a>
       </div>
 
-    </div>
-  </section>
-
-  <!-- ACCESSORY -->
-  <section class="accessory section-block">
-    <div class="container">
-      <div class="section-head">
-        <p class="section-kicker">Combo phụ kiện</p>
-        <h2>Bán chạy trong tuần</h2>
-      </div>
-
-      <div class="accessory-grid">
-        <article class="accessory-card">
-          <h3>Tai nghe TWS</h3>
-          <p>Tự động kết nối, chống ồn chủ động, pin 28 gio.</p>
-          <strong>1.290.000d</strong>
-        </article>
-        <article class="accessory-card">
-          <h3>Củ sạc GaN 65W</h3>
-          <p>Sạc nhanh đa thiết bị, gọn nhẹ, an toàn nhiệt độ.</p>
-          <strong>690.000d</strong>
-        </article>
-        <article class="accessory-card">
-          <h3>Pin dự phòng 20.000mAh</h3>
-          <p>PD 22.5W, màn hình LED, sạc nhanh 2 chiều.</p>
-          <strong>790.000d</strong>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- REVIEWS -->
-  <section id="danh-gia" class="reviews section-block">
-    <div class="container">
-      <div class="section-head">
-        <p class="section-kicker">Đánh giá khách hàng</p>
-        <h2>Phản hồi thực tế sau khi mua</h2>
-      </div>
-
-      <div class="review-grid">
-        <blockquote class="review-card">
-          <p>"Đặt hàng buổi sáng, 2 tiếng sau có máy."</p>
-          <cite>- Minh Quân</cite>
-        </blockquote>
-      </div>
-    </div>
-  </section>
-
-  <!-- NEWS -->
-  <section class="news section-block">
-    <div class="container">
-      <div class="section-head">
-        <p class="section-kicker">Tin công nghệ</p>
-        <h2>Cập nhật xu hướng smartphone mới</h2>
-      </div>
     </div>
   </section>
 

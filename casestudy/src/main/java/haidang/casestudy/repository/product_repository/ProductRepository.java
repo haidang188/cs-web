@@ -644,6 +644,7 @@ public class ProductRepository implements IProductRepository {
                         product.setMinPrice(defaultVariant.getPrice());
                     }
 
+                    product.setImages(images);
                     product.setVariants(variants);
 
                     return Optional.of(product);
