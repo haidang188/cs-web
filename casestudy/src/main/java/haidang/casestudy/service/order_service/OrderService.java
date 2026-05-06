@@ -32,17 +32,13 @@ public class OrderService implements IOrderService {
 
     public OrderService() {
 
-        orderRepository =
-                new OrderRepository();
+        orderRepository = new OrderRepository();
 
-        cartService =
-                new CartService();
+        cartService = new CartService();
 
-        cartRepository =
-                new CartRepository();
+        cartRepository = new CartRepository();
 
-        cartItemRepository =
-                new CartItemRepository();
+        cartItemRepository = new CartItemRepository();
     }
 
     @Override
@@ -50,14 +46,10 @@ public class OrderService implements IOrderService {
                         String address,
                         String phone) {
 
-        // GET CART
 
-        Cart cart =
-                cartService.getCartByUserId(
-                        userId
-                );
 
-        // EMPTY CART
+        Cart cart = cartService.getCartByUserId(userId);
+
 
         if (cart.getItems() == null
                 || cart.getItems().isEmpty()) {
@@ -79,22 +71,15 @@ public class OrderService implements IOrderService {
 
         // CONVERT CART ITEMS
 
-        List<OrderItem> orderItems =
-                new ArrayList<>();
+        List<OrderItem> orderItems = new ArrayList<>();
 
-        BigDecimal total =
-                BigDecimal.ZERO;
+        BigDecimal total = BigDecimal.ZERO;
 
-        for (CartItem cartItem
-                : cart.getItems()) {
+        for (CartItem cartItem : cart.getItems()) {
 
-            OrderItem item =
-                    new OrderItem();
+            OrderItem item = new OrderItem();
 
-            item.setVariantId(
-                    cartItem.getVariant()
-                            .getId()
-            );
+            item.setVariantId(cartItem.getVariant().getId());
 
             item.setProductName(
                     cartItem.getVariant()
@@ -102,18 +87,11 @@ public class OrderService implements IOrderService {
                             .getName()
             );
 
-            item.setPrice(
-                    cartItem.getVariant()
-                            .getPrice()
-            );
+            item.setPrice(cartItem.getVariant().getPrice());
 
-            item.setQuantity(
-                    cartItem.getQuantity()
-            );
+            item.setQuantity(cartItem.getQuantity());
 
-            total = total.add(
-                    item.getSubtotal()
-            );
+            total = total.add(item.getSubtotal());
 
             orderItems.add(item);
         }

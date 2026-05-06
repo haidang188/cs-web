@@ -148,8 +148,7 @@ public class ProductRepository implements IProductRepository {
 
         try (
                 Connection connection = DBConnection.getConnection();
-                PreparedStatement ps =
-                        connection.prepareStatement(FIND_ALL);
+                PreparedStatement ps = connection.prepareStatement(FIND_ALL);
                 ResultSet rs = ps.executeQuery()
         ) {
 
@@ -194,8 +193,7 @@ public class ProductRepository implements IProductRepository {
 
         try (
                 Connection connection = (Connection) DBConnection.getConnection();
-                PreparedStatement ps =
-                        connection.prepareStatement(FIND_BY_ID)
+                PreparedStatement ps = connection.prepareStatement(FIND_BY_ID)
         ) {
 
             ps.setInt(1, id);
@@ -244,8 +242,7 @@ public class ProductRepository implements IProductRepository {
 
         try (
                 Connection connection = DBConnection.getConnection();
-                PreparedStatement ps =
-                        connection.prepareStatement(INSERT)
+                PreparedStatement ps = connection.prepareStatement(INSERT)
         ) {
 
             ps.setString(1, product.getName());
@@ -267,8 +264,7 @@ public class ProductRepository implements IProductRepository {
 
         try (
                 Connection connection = DBConnection.getConnection();
-                PreparedStatement ps =
-                        connection.prepareStatement(UPDATE)
+                PreparedStatement ps = connection.prepareStatement(UPDATE)
         ) {
 
             ps.setString(1, product.getName());
@@ -292,8 +288,7 @@ public class ProductRepository implements IProductRepository {
 
         try (
                 Connection connection = DBConnection.getConnection();
-                PreparedStatement ps =
-                        connection.prepareStatement(DELETE)
+                PreparedStatement ps = connection.prepareStatement(DELETE)
         ) {
 
             ps.setInt(1, id);
@@ -401,13 +396,9 @@ public class ProductRepository implements IProductRepository {
         params.add(limit);
 
         try (
-                Connection connection =
-                        DBConnection.getConnection();
+                Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                sql.toString()
-                        )
+                PreparedStatement ps = connection.prepareStatement(sql.toString())
         ) {
 
             for (int i = 0;
@@ -418,13 +409,11 @@ public class ProductRepository implements IProductRepository {
                         params.get(i));
             }
 
-            try (ResultSet rs =
-                         ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
 
-                    Product product =
-                            mapResultSetToProduct(rs);
+                    Product product = mapResultSetToProduct(rs);
 
                     products.add(product);
                 }
@@ -485,13 +474,9 @@ public class ProductRepository implements IProductRepository {
         }
 
         try (
-                Connection connection =
-                        DBConnection.getConnection();
+                Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                sql.toString()
-                        )
+                PreparedStatement ps = connection.prepareStatement(sql.toString())
         ) {
 
             for (int i = 0;
@@ -522,27 +507,20 @@ public class ProductRepository implements IProductRepository {
     @Override
     public Optional<Product> findDetailById(int id) {
         try (
-                Connection connection =
-                        DBConnection.getConnection();
+                Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                FIND_DETAIL_BY_ID
-                        )
+                PreparedStatement ps = connection.prepareStatement(FIND_DETAIL_BY_ID)
         ) {
 
             ps.setInt(1, id);
 
-            try (ResultSet rs =
-                         ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
 
                 Product product = null;
 
-                Map<String, ProductImage> imageMap =
-                        new LinkedHashMap<>();
+                Map<String, ProductImage> imageMap = new LinkedHashMap<>();
 
-                Map<Integer, ProductVariant> variantMap =
-                        new LinkedHashMap<>();
+                Map<Integer, ProductVariant> variantMap = new LinkedHashMap<>();
 
                 while (rs.next()) {
 
@@ -552,90 +530,49 @@ public class ProductRepository implements IProductRepository {
 
                         product = new Product();
 
-                        product.setId(
-                                rs.getInt("id")
-                        );
+                        product.setId(rs.getInt("id"));
 
-                        product.setName(
-                                rs.getString("name")
-                        );
+                        product.setName(rs.getString("name"));
 
-                        product.setModel(
-                                rs.getString("model")
-                        );
+                        product.setModel(rs.getString("model"));
 
-                        product.setDescription(
-                                rs.getString("description")
-                        );
+                        product.setDescription(rs.getString("description"));
 
-                        product.setStatus(
-                                rs.getBoolean("status")
-                        );
+                        product.setStatus(rs.getBoolean("status"));
 
-                        // CATEGORY
 
-                        Category category =
-                                new Category();
+                        Category category = new Category();
 
-                        category.setId(
-                                rs.getInt(
-                                        "category_id"
-                                )
-                        );
+                        category.setId(rs.getInt("category_id"));
 
-                        category.setName(
-                                rs.getString(
-                                        "category_name"
-                                )
-                        );
+                        category.setName(rs.getString("category_name"));
 
-                        product.setCategory(
-                                category
-                        );
+                        product.setCategory(category);
 
-                        // BRAND
 
-                        Brand brand =
-                                new Brand();
+
+                        Brand brand = new Brand();
 
                         brand.setId(
-                                rs.getInt(
-                                        "brand_id"
-                                )
-                        );
+                                rs.getInt("brand_id"));
 
                         brand.setName(
-                                rs.getString(
-                                        "brand_name"
-                                )
-                        );
+                                rs.getString("brand_name"));
 
-                        product.setBrand(
-                                brand
-                        );
+                        product.setBrand(brand);
                     }
 
-                    // IMAGE
 
-                    String imageUrl =
-                            rs.getString(
-                                    "image_url"
-                            );
+
+                    String imageUrl = rs.getString("image_url");
 
                     if (imageUrl != null) {
 
-                        ProductImage image =
-                                new ProductImage();
+                        ProductImage image = new ProductImage();
 
-                        image.setImageUrl(
-                                imageUrl
-                        );
+                        image.setImageUrl(imageUrl);
 
-                        image.setPrimary(
-                                rs.getBoolean(
-                                        "is_primary"
-                                )
-                        );
+                        image.setPrimary(rs.getBoolean("is_primary"));
 
                         imageMap.putIfAbsent(imageUrl, image);
                     }
@@ -643,41 +580,24 @@ public class ProductRepository implements IProductRepository {
                     // VARIANT
 
                     int variantId =
-                            rs.getInt(
-                                    "variant_id"
-                            );
+                            rs.getInt("variant_id");
 
                     if (variantId > 0) {
 
                         if (!variantMap.containsKey(variantId)) {
-                            ProductVariant variant =
-                                    new ProductVariant();
+                            ProductVariant variant = new ProductVariant();
 
-                            variant.setId(
-                                    variantId
-                            );
+                            variant.setId(variantId);
 
                             variant.setProductId(product.getId());
 
-                            variant.setRam(
-                                    rs.getString("ram")
-                            );
+                            variant.setRam(rs.getString("ram"));
 
-                            variant.setStorage(
-                                    rs.getString(
-                                            "storage"
-                                    )
-                            );
+                            variant.setStorage(rs.getString("storage"));
 
-                            variant.setPrice(
-                                    rs.getBigDecimal(
-                                            "price"
-                                    )
-                            );
+                            variant.setPrice(rs.getBigDecimal("price"));
 
-                            variant.setStock(
-                                    rs.getInt("stock")
-                            );
+                            variant.setStock(rs.getInt("stock"));
 
                             variantMap.put(variantId, variant);
                         }
@@ -686,11 +606,9 @@ public class ProductRepository implements IProductRepository {
 
                 if (product != null) {
 
-                    List<ProductImage> images =
-                            new ArrayList<>(imageMap.values());
+                    List<ProductImage> images = new ArrayList<>(imageMap.values());
 
-                    List<ProductVariant> variants =
-                            new ArrayList<>(variantMap.values());
+                    List<ProductVariant> variants = new ArrayList<>(variantMap.values());
 
                     ProductImage primaryImage =
                             images.stream()
@@ -731,63 +649,34 @@ public class ProductRepository implements IProductRepository {
 
         Product product = new Product();
 
-        product.setId(
-                rs.getInt("id")
-        );
+        product.setId(rs.getInt("id"));
 
-        product.setName(
-                rs.getString("name")
-        );
+        product.setName(rs.getString("name"));
 
-        product.setModel(
-                rs.getString("model")
-        );
+        product.setModel(rs.getString("model"));
 
-        product.setDescription(
-                rs.getString("description")
-        );
+        product.setDescription(rs.getString("description"));
 
-        product.setStatus(
-                rs.getBoolean("status")
-        );
+        product.setStatus(rs.getBoolean("status"));
 
-        product.setDefaultVariantId(
-                rs.getInt("default_variant_id")
-        );
+        product.setDefaultVariantId(rs.getInt("default_variant_id"));
 
-        product.setMinPrice(
-                rs.getBigDecimal("min_price")
-        );
+        product.setMinPrice(rs.getBigDecimal("min_price"));
 
-        product.setThumbnail(
-                rs.getString("thumbnail")
-        );
+        product.setThumbnail(rs.getString("thumbnail"));
 
-        // CATEGORY
 
-        Category category =
-                new Category();
+        Category category = new Category();
 
-        category.setId(
-                rs.getInt("category_id")
-        );
-        category.setName(
-                rs.getString("category_name")
-        );
+        category.setId(rs.getInt("category_id"));
+        category.setName(rs.getString("category_name"));
 
         product.setCategory(category);
 
-        // BRAND
+        Brand brand = new Brand();
 
-        Brand brand =
-                new Brand();
-
-        brand.setId(
-                rs.getInt("brand_id")
-        );
-        brand.setName(
-                rs.getString("brand_name")
-        );
+        brand.setId(rs.getInt("brand_id"));
+        brand.setName(rs.getString("brand_name"));
 
         product.setBrand(brand);
 
