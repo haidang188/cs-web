@@ -34,6 +34,13 @@
           </c:forEach>
         </select>
 
+        <select name="categoryId">
+          <option value="">Tất cả danh mục</option>
+          <c:forEach var="category" items="${categories}">
+            <option value="${category.id}" ${categoryId == category.id ? 'selected' : ''}>${category.name}</option>
+          </c:forEach>
+        </select>
+
         <button type="submit">Lọc</button>
       </form>
 
@@ -90,6 +97,40 @@
             </article>
           </c:forEach>
 
+        </div>
+      </c:if>
+
+      <c:if test="${totalPages > 1}">
+        <div class="pagination">
+          <c:if test="${currentPage > 1}">
+            <c:url var="prevPageUrl" value="/products">
+              <c:param name="keyword" value="${keyword}" />
+              <c:param name="brandId" value="${brandId}" />
+              <c:param name="categoryId" value="${categoryId}" />
+              <c:param name="page" value="${currentPage - 1}" />
+            </c:url>
+
+            <a class="pagination-link" href="${prevPageUrl}">
+              Trang trước
+            </a>
+          </c:if>
+
+          <span class="pagination-info">
+            Trang ${currentPage} / ${totalPages}
+          </span>
+
+          <c:if test="${currentPage < totalPages}">
+            <c:url var="nextPageUrl" value="/products">
+              <c:param name="keyword" value="${keyword}" />
+              <c:param name="brandId" value="${brandId}" />
+              <c:param name="categoryId" value="${categoryId}" />
+              <c:param name="page" value="${currentPage + 1}" />
+            </c:url>
+
+            <a class="pagination-link" href="${nextPageUrl}">
+              Trang sau
+            </a>
+          </c:if>
         </div>
       </c:if>
 

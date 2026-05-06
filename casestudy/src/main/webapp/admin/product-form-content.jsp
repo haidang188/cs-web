@@ -72,6 +72,25 @@
                     <textarea name="description" rows="5">${product.description}</textarea>
                 </label>
 
+                <label>
+                    Giá bán
+                    <input type="number"
+                           name="price"
+                           min="0"
+                           step="0.01"
+                           value="${product.minPrice}"
+                           required />
+                </label>
+
+                <label>
+                    Link ảnh chính
+                    <input type="url"
+                           name="imageUrl"
+                           value="${product.thumbnail}"
+                           placeholder="https://..."
+                           required />
+                </label>
+
                 <c:if test="${editing}">
                     <label>
                         Trạng thái

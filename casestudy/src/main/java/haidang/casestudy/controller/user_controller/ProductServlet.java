@@ -68,7 +68,7 @@ public class ProductServlet extends HttpServlet {
                         )
                 );
 
-        int size = 8;
+        int size = 16;
 
         // SEARCH
 

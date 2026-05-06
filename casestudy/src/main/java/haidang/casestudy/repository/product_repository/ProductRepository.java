@@ -8,6 +8,7 @@ import haidang.casestudy.ultis.DBConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -238,11 +239,14 @@ public class ProductRepository implements IProductRepository {
     }
 
     @Override
-    public void save(Product product) {
+        public int save(Product product) {
 
         try (
                 Connection connection = DBConnection.getConnection();
-                PreparedStatement ps = connection.prepareStatement(INSERT)
+            PreparedStatement ps = connection.prepareStatement(
+                INSERT,
+                Statement.RETURN_GENERATED_KEYS
+            )
         ) {
 
             ps.setString(1, product.getName());
@@ -254,9 +258,19 @@ public class ProductRepository implements IProductRepository {
 
             ps.executeUpdate();
 
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+
+                if (rs.next()) {
+
+                    return rs.getInt(1);
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return -1;
     }
 
     @Override
