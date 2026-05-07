@@ -21,11 +21,6 @@
 
         <a href="<%= contextPath %>/products" class="cps-pill-btn">Danh mục</a>
 
-        <form class="cps-search" action="<%= contextPath %>/products" method="get">
-            <input name="keyword" type="text" placeholder="Tìm iPhone, Samsung, Xiaomi, OPPO..." />
-            <button type="submit">Tìm</button>
-        </form>
-
         <div class="cps-actions">
             <a href="<%= contextPath %>/products">Sản phẩm</a>
             <a href="<%= contextPath %>/cart">Giỏ hàng</a>

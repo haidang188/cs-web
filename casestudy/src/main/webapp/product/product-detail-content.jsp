@@ -65,8 +65,10 @@
                 <label>
                   Phiên bản
                   <select name="variantId" required>
-                    <c:forEach var="variant" items="${product.variants}">
-                      <option value="${variant.id}" ${variant.stock <= 0 ? 'disabled' : ''}>
+                    <c:forEach var="variant" items="${product.variants}" varStatus="status">
+                      <option value="${variant.id}"
+                              ${status.first ? 'selected' : ''}
+                              ${variant.stock <= 0 ? 'disabled' : ''}>
                         RAM ${variant.ram} - ${variant.storage}
                         -
                         <fmt:formatNumber value="${variant.price}" type="number"/> đ
