@@ -14,7 +14,7 @@
 
       <div class="section-head">
         <p class="section-kicker">Danh sách sản phẩm</p>
-        <h2>Tìm smartphone phù họp với nhu cầu</h2>
+        <h2>Tìm smartphone phù hợp với nhu cầu</h2>
       </div>
 
       <!-- FORM -->
