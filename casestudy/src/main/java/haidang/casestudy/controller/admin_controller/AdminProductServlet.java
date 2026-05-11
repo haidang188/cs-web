@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,12 +158,35 @@ public class AdminProductServlet extends HttpServlet {
         String description =
                 request.getParameter("description");
 
+        BigDecimal price;
+
+        try {
+
+            price = new BigDecimal(
+                    request.getParameter("price")
+            );
+
+        } catch (Exception e) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                            + "/admin/products?action=create"
+            );
+
+            return;
+        }
+
+        String imageUrl =
+                request.getParameter("imageUrl");
+
         Product product = new Product();
 
         product.setName(name);
         product.setModel(model);
         product.setDescription(description);
         product.setStatus(true);
+        product.setMinPrice(price);
+        product.setThumbnail(imageUrl);
 
         Category category = new Category();
         category.setId(categoryId);
@@ -249,6 +273,27 @@ public class AdminProductServlet extends HttpServlet {
         String description =
                 request.getParameter("description");
 
+        BigDecimal price;
+
+        try {
+
+            price = new BigDecimal(
+                    request.getParameter("price")
+            );
+
+        } catch (Exception e) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                            + "/admin/products?action=edit&id=" + id
+            );
+
+            return;
+        }
+
+        String imageUrl =
+                request.getParameter("imageUrl");
+
         String status =
                 request.getParameter("status");
 
@@ -260,6 +305,8 @@ public class AdminProductServlet extends HttpServlet {
         product.setModel(model);
 
         product.setDescription(description);
+        product.setMinPrice(price);
+        product.setThumbnail(imageUrl);
 
         product.setStatus("true".equals(status));
 

@@ -6,6 +6,7 @@ import haidang.casestudy.model.product_model.ProductPageResponse;
 import haidang.casestudy.model.product_model.ProductVariant;
 import haidang.casestudy.repository.product_repository.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,12 +45,104 @@ public class ProductService implements IProductService {
     }
     @Override
     public void createProduct(Product product) {
-        productRepository.save(product);
+
+                int productId =
+                                productRepository.save(product);
+
+                if (productId <= 0) {
+
+                        return;
+                }
+
+                BigDecimal price = product.getMinPrice();
+
+                if (price != null) {
+
+                        ProductVariant variant = new ProductVariant();
+                        variant.setProductId(productId);
+                        variant.setRam("Mặc định");
+                        variant.setStorage("Mặc định");
+                        variant.setPrice(price);
+                        variant.setStock(999);
+
+                        variantRepository.save(variant);
+                }
+
+                String imageUrl = product.getThumbnail();
+
+                if (imageUrl != null && !imageUrl.isBlank()) {
+
+                        ProductImage image = new ProductImage();
+                        image.setProductId(productId);
+                        image.setImageUrl(imageUrl);
+                        image.setPrimary(true);
+
+                        imageRepository.save(image);
+                }
     }
 
     @Override
     public void updateProduct(Product product) {
-        productRepository.update(product);
+
+                productRepository.update(product);
+
+                BigDecimal price = product.getMinPrice();
+
+                if (price != null) {
+
+                        Optional<Product> optionalProduct =
+                                        getProductById(product.getId());
+
+                        if (optionalProduct.isPresent()) {
+
+                                Product currentProduct = optionalProduct.get();
+
+                                if (currentProduct.getVariants() != null
+                                                && !currentProduct.getVariants().isEmpty()) {
+
+                                        ProductVariant variant =
+                                                        currentProduct.getVariants().get(0);
+
+                                        variant.setPrice(price);
+                                        variantRepository.update(variant);
+                                } else {
+
+                                        ProductVariant variant = new ProductVariant();
+                                        variant.setProductId(product.getId());
+                                        variant.setRam("Mặc định");
+                                        variant.setStorage("Mặc định");
+                                        variant.setPrice(price);
+                                        variant.setStock(999);
+
+                                        variantRepository.save(variant);
+                                }
+
+                                String imageUrl = product.getThumbnail();
+
+                                if (imageUrl != null && !imageUrl.isBlank()) {
+
+                                        if (currentProduct.getImages() != null
+                                                        && !currentProduct.getImages().isEmpty()) {
+
+                                                ProductImage image =
+                                                                currentProduct.getImages().get(0);
+
+                                                image.setImageUrl(imageUrl);
+
+                                                imageRepository.delete(image.getId());
+                                                imageRepository.save(image);
+                                        } else {
+
+                                                ProductImage image = new ProductImage();
+                                                image.setProductId(product.getId());
+                                                image.setImageUrl(imageUrl);
+                                                image.setPrimary(true);
+
+                                                imageRepository.save(image);
+                                        }
+                                }
+                        }
+                }
     }
 
     @Override
