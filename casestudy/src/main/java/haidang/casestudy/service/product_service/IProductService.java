@@ -8,15 +8,10 @@ import java.util.Optional;
 
 public interface IProductService {
     List<Product> getAllProducts();
-
     Optional<Product> getProductById(int id);
-
     void createProduct(Product product);
-
     void updateProduct(Product product);
-
     void deleteProduct(int id);
-
     ProductPageResponse searchProducts(
             String keyword,
             Integer brandId,

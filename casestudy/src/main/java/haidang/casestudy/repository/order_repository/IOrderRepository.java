@@ -7,7 +7,5 @@ import java.util.List;
 public interface IOrderRepository {
     int createOrder(Order order);
     List<Order> findAll();
-
-    void updateStatus(int orderId,
-                      String status);
+    void updateStatus(int orderId, String status);
 }

@@ -4,25 +4,17 @@ import java.math.BigDecimal;
 
 public class OrderItem {
     private int id;
-
     private int orderId;
-
     private int variantId;
-
     private String productName;
-
     private BigDecimal price;
-
     private int quantity;
 
     public OrderItem() {
     }
 
     public BigDecimal getSubtotal() {
-
-        return price.multiply(
-                BigDecimal.valueOf(quantity)
-        );
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 
     public int getId() {

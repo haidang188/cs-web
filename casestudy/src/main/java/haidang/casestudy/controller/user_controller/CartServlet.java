@@ -24,187 +24,77 @@ public class CartServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action =
-                request.getParameter("action");
-
+        String action = request.getParameter("action");
         if (action == null) {
-
             showCart(request, response);
-
             return;
         }
-
         switch (action) {
-
             case "remove":
-
                 removeItem(request, response);
-
                 break;
-
             default:
-
                 showCart(request, response);
-
                 break;
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action =
-                request.getParameter("action");
-
+        String action = request.getParameter("action");
         if ("add".equals(action)) {
-
             addToCart(request, response);
-
         } else if ("update".equals(action)) {
-
             updateQuantity(request, response);
         } else if ("remove".equals(action)) {
-
             removeItem(request, response);
         }
     }
 
-    // SHOW CART
-
-    private void showCart(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
-
+    private void showCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = getLoggedInUser(request);
-
-        Cart cart =
-                cartService.getCartByUserId(
-                        user.getId()
-                );
-
+        Cart cart = cartService.getCartByUserId(user.getId());
         request.setAttribute("cart", cart);
         request.setAttribute("cartItems", cart.getItems());
         request.setAttribute("cartTotal", cart.getTotalAmount());
         request.setAttribute("pageTitle", "Giỏ hàng");
         request.setAttribute("contentPage", "/cart/cart-content.jsp");
-
-        request.getRequestDispatcher(
-                "/layouts/main.jsp"
-        ).forward(request, response);
+        request.getRequestDispatcher("/layouts/main.jsp").forward(request, response);
     }
 
-    // ADD TO CART
 
-    private void addToCart(HttpServletRequest request,
-                           HttpServletResponse response)
-            throws IOException {
-
+    private void addToCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = getLoggedInUser(request);
-
-        int variantId =
-                Integer.parseInt(
-                        request.getParameter(
-                                "variantId"
-                        )
-                );
-
-        int quantity =
-                Integer.parseInt(
-                        request.getParameter(
-                                "quantity"
-                        )
-                );
-
-        cartService.addToCart(
-                user.getId(),
-                variantId,
-                quantity
-        );
-
-        response.sendRedirect(
-                request.getContextPath()
-                        + "/cart"
-        );
+        int variantId = Integer.parseInt(request.getParameter("variantId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        cartService.addToCart(user.getId(), variantId, quantity);
+        response.sendRedirect(request.getContextPath() + "/cart");
     }
 
-    // UPDATE QUANTITY
 
-    private void updateQuantity(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
-
+    private void updateQuantity(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = getLoggedInUser(request);
-
-        int variantId =
-                Integer.parseInt(
-                        request.getParameter(
-                                "variantId"
-                        )
-                );
-
-        int quantity =
-                Integer.parseInt(
-                        request.getParameter(
-                                "quantity"
-                        )
-                );
-
-        cartService.updateQuantity(
-                user.getId(),
-                variantId,
-                quantity
-        );
-
-        response.sendRedirect(
-                request.getContextPath()
-                        + "/cart"
-        );
+        int variantId = Integer.parseInt(request.getParameter("variantId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        cartService.updateQuantity(user.getId(), variantId, quantity);
+        response.sendRedirect(request.getContextPath() + "/cart");
     }
 
-    // REMOVE ITEM
 
-    private void removeItem(HttpServletRequest request,
-                            HttpServletResponse response)
-            throws IOException {
 
+    private void removeItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = getLoggedInUser(request);
-
-        int variantId =
-                Integer.parseInt(
-                        request.getParameter(
-                                "variantId"
-                        )
-                );
-
-        cartService.removeItem(
-                user.getId(),
-                variantId
-        );
-
-        response.sendRedirect(
-                request.getContextPath()
-                        + "/cart"
-        );
+        int variantId = Integer.parseInt(request.getParameter("variantId"));
+        cartService.removeItem(user.getId(), variantId);
+        response.sendRedirect(request.getContextPath() + "/cart");
     }
 
-    // GET SESSION USER
 
-    private User getLoggedInUser(
-            HttpServletRequest request
-    ) {
-
-        HttpSession session =
-                request.getSession(false);
-
-        return (User) session.getAttribute(
-                "loggedInUser"
-        );
+    private User getLoggedInUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return (User) session.getAttribute("loggedInUser");
     }
 }
