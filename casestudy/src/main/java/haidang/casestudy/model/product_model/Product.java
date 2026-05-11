@@ -27,11 +27,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String name, String model,
-                   String description, boolean status,
-                   Timestamp createdAt,
-                   Category category,
-                   Brand brand) {
+    public Product(int id, String name, String model, String description, boolean status, Timestamp createdAt, Category category, Brand brand) {
         this.id = id;
         this.name = name;
         this.model = model;

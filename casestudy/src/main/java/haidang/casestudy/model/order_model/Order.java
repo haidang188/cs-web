@@ -6,19 +6,12 @@ import java.util.List;
 
 public class Order {
     private int id;
-
     private int userId;
-
     private BigDecimal total;
-
     private String status;
-
     private String address;
-
     private String phone;
-
     private Timestamp createdAt;
-
     private List<OrderItem> items;
 
     public Order() {

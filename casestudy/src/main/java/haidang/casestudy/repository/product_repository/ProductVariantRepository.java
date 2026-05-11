@@ -57,57 +57,32 @@ public class ProductVariantRepository implements IProductVariantRepository {
     public List<ProductVariant> findByProductId(int productId) {
         List<ProductVariant> variants = new ArrayList<>();
 
-        try (
-                Connection connection =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                FIND_BY_PRODUCT_ID
-                        )
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(FIND_BY_PRODUCT_ID)
         ) {
-
             ps.setInt(1, productId);
-
             try (ResultSet rs = ps.executeQuery()) {
-
                 while (rs.next()) {
-
-                    ProductVariant variant =
-                            mapResultSetToVariant(rs);
-
+                    ProductVariant variant = mapResultSetToVariant(rs);
                     variants.add(variant);
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return variants;
     }
 
     @Override
     public Optional<ProductVariant> findById(int id) {
-        try (
-                Connection connection =
-                        DBConnection.getConnection();
+        try (Connection connection = DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        connection.prepareStatement(
-                                FIND_BY_ID
-                        )
+                PreparedStatement ps = connection.prepareStatement(FIND_BY_ID)
         ) {
-
             ps.setInt(1, id);
-
             try (ResultSet rs = ps.executeQuery()) {
-
                 if (rs.next()) {
-
-                    ProductVariant variant =
-                            mapResultSetToVariant(rs);
-
+                    ProductVariant variant = mapResultSetToVariant(rs);
                     return Optional.of(variant);
                 }
             }
@@ -115,26 +90,18 @@ public class ProductVariantRepository implements IProductVariantRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return Optional.empty();
     }
-
     @Override
     public void save(ProductVariant variant) {
-        try (
-                Connection connection =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        connection.prepareStatement(INSERT)
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(INSERT)
         ) {
-
             ps.setInt(1, variant.getProductId());
             ps.setString(2, variant.getRam());
             ps.setString(3, variant.getStorage());
             ps.setBigDecimal(4, variant.getPrice());
             ps.setInt(5, variant.getStock());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -144,21 +111,14 @@ public class ProductVariantRepository implements IProductVariantRepository {
 
     @Override
     public void update(ProductVariant variant) {
-        try (
-                Connection connection =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        connection.prepareStatement(UPDATE)
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(UPDATE)
         ) {
-
             ps.setString(1, variant.getRam());
             ps.setString(2, variant.getStorage());
             ps.setBigDecimal(3, variant.getPrice());
             ps.setInt(4, variant.getStock());
-
             ps.setInt(5, variant.getId());
-
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -168,38 +128,24 @@ public class ProductVariantRepository implements IProductVariantRepository {
 
     @Override
     public void delete(int id) {
-        try (
-                Connection connection =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        connection.prepareStatement(DELETE)
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(DELETE)
         ) {
-
             ps.setInt(1, id);
-
             ps.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    private ProductVariant mapResultSetToVariant(ResultSet rs)
-            throws SQLException {
-
+    private ProductVariant mapResultSetToVariant(ResultSet rs) throws SQLException {
         ProductVariant variant = new ProductVariant();
-
         variant.setId(rs.getInt("id"));
         variant.setProductId(rs.getInt("product_id"));
         variant.setRam(rs.getString("ram"));
         variant.setStorage(rs.getString("storage"));
-
         BigDecimal price = rs.getBigDecimal("price");
-
         variant.setPrice(price);
-
         variant.setStock(rs.getInt("stock"));
-
         return variant;
     }
 }
