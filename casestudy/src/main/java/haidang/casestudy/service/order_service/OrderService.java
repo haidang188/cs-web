@@ -18,110 +18,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService {
-    private final IOrderRepository
-            orderRepository;
-
-    private final ICartService
-            cartService;
-
-    private final ICartRepository
-            cartRepository;
-
-    private final ICartItemRepository
-            cartItemRepository;
+    private final IOrderRepository orderRepository;
+    private final ICartService cartService;
+    private final ICartRepository cartRepository;
+    private final ICartItemRepository cartItemRepository;
 
     public OrderService() {
-
         orderRepository = new OrderRepository();
-
         cartService = new CartService();
-
         cartRepository = new CartRepository();
-
         cartItemRepository = new CartItemRepository();
     }
 
     @Override
-    public int checkout(int userId,
-                        String address,
-                        String phone) {
-
-
-
+    public int checkout(int userId, String address, String phone) {
         Cart cart = cartService.getCartByUserId(userId);
-
-
-        if (cart.getItems() == null
-                || cart.getItems().isEmpty()) {
-
+        if (cart.getItems() == null || cart.getItems().isEmpty()) {
             return -1;
         }
 
-        // CREATE ORDER
-
         Order order = new Order();
-
         order.setUserId(userId);
-
         order.setStatus("PENDING");
-
         order.setAddress(address);
-
         order.setPhone(phone);
-
-        // CONVERT CART ITEMS
-
         List<OrderItem> orderItems = new ArrayList<>();
-
         BigDecimal total = BigDecimal.ZERO;
-
         for (CartItem cartItem : cart.getItems()) {
-
             OrderItem item = new OrderItem();
-
             item.setVariantId(cartItem.getVariant().getId());
-
-            item.setProductName(
-                    cartItem.getVariant()
-                            .getProduct()
-                            .getName()
-            );
-
+            item.setProductName(cartItem.getVariant().getProduct().getName());
             item.setPrice(cartItem.getVariant().getPrice());
-
             item.setQuantity(cartItem.getQuantity());
-
             total = total.add(item.getSubtotal());
-
             orderItems.add(item);
         }
-
         order.setItems(orderItems);
-
         order.setTotal(total);
 
-        // SAVE ORDER
-
-        int orderId =
-                orderRepository.createOrder(
-                        order
-                );
-
-        // CLEAR CART
-
+        int orderId = orderRepository.createOrder(order);
         if (orderId > 0) {
-
-            for (CartItem cartItem
-                    : cart.getItems()) {
-
-                cartItemRepository.removeItem(
-                        cart.getId(),
-                        cartItem.getVariant()
-                                .getId()
-                );
+            for (CartItem cartItem : cart.getItems()) {
+                cartItemRepository.removeItem(cart.getId(), cartItem.getVariant().getId());
             }
         }
-
         return orderId;
     }
 
@@ -132,9 +72,6 @@ public class OrderService implements IOrderService {
 
     @Override
     public void updateOrderStatus(int orderId, String status) {
-        orderRepository.updateStatus(
-                orderId,
-                status
-        );
+        orderRepository.updateStatus(orderId, status);
     }
 }

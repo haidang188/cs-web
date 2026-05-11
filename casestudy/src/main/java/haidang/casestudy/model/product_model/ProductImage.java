@@ -9,8 +9,7 @@ public class ProductImage {
     public ProductImage() {
     }
 
-    public ProductImage(int id, int productId,
-                        String imageUrl, boolean primary) {
+    public ProductImage(int id, int productId, String imageUrl, boolean primary) {
         this.id = id;
         this.productId = productId;
         this.imageUrl = imageUrl;

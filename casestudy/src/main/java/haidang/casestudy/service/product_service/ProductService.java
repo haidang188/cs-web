@@ -11,71 +11,38 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductService implements IProductService {
-
     private final IProductRepository productRepository;
-
-    private final IProductVariantRepository
-            variantRepository;
-
-    private final IProductImageRepository
-            imageRepository;
-
+    private final IProductVariantRepository variantRepository;
+    private final IProductImageRepository imageRepository;
     public ProductService() {
-
-        this.productRepository =
-                new ProductRepository();
-
-        this.variantRepository =
-                new ProductVariantRepository();
-
-        this.imageRepository =
-                new ProductImageRepository();
+        this.productRepository = new ProductRepository();
+        this.variantRepository = new ProductVariantRepository();
+        this.imageRepository = new ProductImageRepository();
     }
 
     @Override
     public List<Product> getAllProducts() {
-        List<Product> products =
-                productRepository.findAll();
-
+        List<Product> products = productRepository.findAll();
         for (Product product : products) {
-
-            List<ProductImage> images =
-                    imageRepository.findByProductId(
-                            product.getId()
-                    );
-
+            List<ProductImage> images = imageRepository.findByProductId(product.getId());
             product.setImages(images);
         }
-
         return products;
     }
 
     @Override
     public Optional<Product> getProductById(int id) {
-        Optional<Product> optionalProduct =
-                productRepository.findById(id);
+        Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isPresent()) {
-
             Product product = optionalProduct.get();
-
-            List<ProductVariant> variants =
-                    variantRepository.findByProductId(
-                            product.getId()
-                    );
-
-            List<ProductImage> images =
-                    imageRepository.findByProductId(
-                            product.getId()
-                    );
-
+            List<ProductVariant> variants = variantRepository.findByProductId(product.getId());
+            List<ProductImage> images = imageRepository.findByProductId(product.getId());
             product.setVariants(variants);
             product.setImages(images);
         }
-
         return optionalProduct;
     }
-
     @Override
     public void createProduct(Product product) {
 
@@ -185,47 +152,22 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductPageResponse searchProducts(String keyword, Integer brandId, Integer categoryId, int page, int size) {
-        int offset =
-                (page - 1) * size;
+        int offset = (page - 1) * size;
+        List<Product> products = productRepository.searchProducts(keyword, brandId, categoryId, offset, size);
+        int totalItems = productRepository.countSearchProducts(keyword, brandId, categoryId);
 
-        List<Product> products =
-                productRepository.searchProducts(
-                        keyword,
-                        brandId,
-                        categoryId,
-                        offset,
-                        size
-                );
+        int totalPages = (int) Math.ceil((double) totalItems / size);
 
-        int totalItems =
-                productRepository.countSearchProducts(
-                        keyword,
-                        brandId,
-                        categoryId
-                );
-
-        int totalPages =
-                (int) Math.ceil(
-                        (double) totalItems / size
-                );
-
-        ProductPageResponse response =
-                new ProductPageResponse();
-
+        ProductPageResponse response = new ProductPageResponse();
         response.setProducts(products);
-
         response.setCurrentPage(page);
-
         response.setTotalItems(totalItems);
-
         response.setTotalPages(totalPages);
-
         return response;
     }
 
     @Override
     public Optional<Product> findDetailById(int id) {
-        return productRepository
-                .findDetailById(id);
+        return productRepository.findDetailById(id);
     }
 }

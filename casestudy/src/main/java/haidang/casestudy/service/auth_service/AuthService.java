@@ -11,44 +11,29 @@ public class AuthService implements IAuthService {
     private final IUserRepository userRepository;
 
     public AuthService() {
-
-        userRepository =
-                new UserRepository();
+        userRepository = new UserRepository();
     }
     @Override
     public Optional<User> login(String email, String password) {
-        Optional<User> optionalUser =
-                userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isEmpty()) {
-
             return Optional.empty();
         }
-
         User user = optionalUser.get();
-
         if (!user.getPassword().equals(password)) {
-
             return Optional.empty();
         }
-
         return Optional.of(user);
     }
-
     @Override
     public boolean register(User user) {
-        Optional<User> existingUser =
-                userRepository.findByEmail(
-                        user.getEmail()
-                );
-
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
-
             return false;
         }
-
         userRepository.save(user);
-
+        userRepository.save(user);
         return true;
     }
 }

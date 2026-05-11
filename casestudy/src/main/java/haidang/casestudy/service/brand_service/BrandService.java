@@ -7,18 +7,14 @@ import haidang.casestudy.repository.product_repository.IBrandRepository;
 import java.util.List;
 
 public class BrandService implements IBrandService {
-    private final IBrandRepository
-            brandRepository;
+    private final IBrandRepository brandRepository;
 
     public BrandService() {
-
-        brandRepository =
-                new BrandRepository();
+        brandRepository = new BrandRepository();
     }
 
     @Override
     public List<Brand> findAll() {
-
         return brandRepository.findAll();
     }
 }

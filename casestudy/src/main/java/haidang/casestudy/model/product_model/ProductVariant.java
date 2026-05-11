@@ -15,9 +15,7 @@ public class ProductVariant {
     public ProductVariant() {
     }
 
-    public ProductVariant(int id, int productId,
-                          String ram, String storage,
-                          BigDecimal price, int stock) {
+    public ProductVariant(int id, int productId, String ram, String storage, BigDecimal price, int stock) {
         this.id = id;
         this.productId = productId;
         this.ram = ram;
